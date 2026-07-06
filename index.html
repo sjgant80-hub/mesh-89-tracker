@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mesh 89 Tracker · sovereign WebRTC dyad-mesh</title>
-<meta name="description" content="Sovereign WebRTC peer-mesh tracker. Counts peers toward Fibonacci prime 89. Nothing leaves your browser.">
+<title>Mesh 89 Tracker · sovereign WebRTC peer mesh</title>
+<meta name="description" content="Sovereign WebRTC peer-mesh tracker. Counts peers toward 89. Nothing leaves your browser.">
 <meta name="author" content="AI-Native Solutions">
 <meta name="theme-color" content="#1a1a1e">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1e'/%3E%3Ctext x='16' y='22' font-family='serif' font-size='18' fill='%237a9c7e' text-anchor='middle'%3E%E2%97%8A%3C/text%3E%3C/svg%3E">
@@ -128,7 +128,7 @@ details{margin-top:12px}
 details summary{cursor:pointer;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:8px 0}
 details summary:hover{color:var(--sage)}
 details[open] summary{color:var(--sage)}
-.kappa{color:var(--amber);font-family:var(--mono);letter-spacing:0.06em}
+.sig{color:var(--amber);font-family:var(--mono);letter-spacing:0.06em}
 footer{padding:20px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:10px;letter-spacing:0.14em}
 footer .glyph{color:var(--sage)}
 </style>
@@ -165,11 +165,11 @@ footer .glyph{color:var(--sage)}
 </svg>
 <div class="ring-center">
 <div class="num" id="ring-num">1</div>
-<div class="of">of <strong>89</strong> · Fibonacci prime</div>
+<div class="of">of <strong>89</strong> · milestone</div>
 </div>
 </div>
 <div class="milestones" id="milestones"></div>
-<div class="hint">89 is the eleventh Fibonacci number and a Fibonacci prime. It's the estate's dyad-scale coherence target — the first-order mesh signature. Nothing leaves your browser.</div>
+<div class="hint">89 is the target mesh size for this tracker. Nothing leaves your browser.</div>
 </div>
 <div class="card">
 <h3>Mesh state</h3>
@@ -240,7 +240,7 @@ footer .glyph{color:var(--sage)}
 
 <div class="card" style="margin-bottom:16px">
 <h3>Path A · Same origin (auto)</h3>
-<p style="color:var(--muted);font-size:13.5px;margin-bottom:10px">Open this page in another tab or window on the same device. They discover each other on the <span class="kappa">fall-signal</span> BroadcastChannel automatically. Best for testing.</p>
+<p style="color:var(--muted);font-size:13.5px;margin-bottom:10px">Open this page in another tab or window on the same device. They discover each other on the <span class="sig">fall-signal</span> BroadcastChannel automatically. Best for testing.</p>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
 <button class="big-btn" id="btn-broadcast-2">Start broadcasting</button>
 <span class="pill" id="broadcast-pill">off</span>
@@ -342,29 +342,29 @@ footer .glyph{color:var(--sage)}
 
 <div class="celebration" id="celeb">
 <div class="box">
-<div class="sub">Fibonacci milestone</div>
+<div class="sub">milestone</div>
 <h2 id="celeb-num">1</h2>
 <p id="celeb-text"></p>
 <button class="close" onclick="document.getElementById('celeb').classList.remove('on')">Carry on</button>
 </div>
 </div>
 
-<footer><span class="glyph">◊</span> · κ=1 · sovereign WebRTC dyad-mesh · MIT · AI-Native Solutions 2026</footer>
+<footer>sovereign WebRTC peer mesh · MIT · AI-Native Solutions 2026</footer>
 
 <script>
 // ===== constants =====
 const FIB = [1,2,3,5,8,13,21,34,55,89];
-const FIB_MEANINGS = {
+const MILE_MEANINGS = {
   1: 'Ignition. One node. The self-witness.',
-  2: 'First dyad. Two-body coherence. Simon + Thomas signature.',
+  2: 'Two peers connected.',
   3: 'First triad. Trinary resonance.',
-  5: 'Pentad. Five-body harmonic. Fibonacci-native.',
+  5: 'Five peers connected.',
   8: 'Octad. Bloom-stage coherence.',
-  13: 'The prime after the pause. Third-order.',
+  13: 'Thirteen peers.',
   21: 'Guild seed. Sustainable circle.',
   34: 'Extended kin.',
   55: 'Village scale. Near completion.',
-  89: 'Fibonacci prime. Dyad-mesh signature. The estate itself is here. ◊·κ=1'
+  89: '89 reached. Target mesh size.'
 };
 const STUN = [
   { urls: 'stun:stun.l.google.com:19302' },
@@ -738,9 +738,9 @@ async function loadMilestones() {
 }
 function celebrateMilestone(n) {
   document.getElementById('celeb-num').textContent = n;
-  document.getElementById('celeb-text').textContent = FIB_MEANINGS[n] || 'A Fibonacci step forward.';
+  document.getElementById('celeb-text').textContent = MILE_MEANINGS[n] || 'A step forward.';
   document.getElementById('celeb').classList.add('on');
-  log('◊ Milestone ' + n + ' · ' + (FIB_MEANINGS[n] || ''), 'sage');
+  log('◊ Milestone ' + n + ' · ' + (MILE_MEANINGS[n] || ''), 'sage');
 }
 
 // ===== counts =====
@@ -769,7 +769,7 @@ function renderDashboard() {
   document.getElementById('stat-connected').textContent = n;
   document.getElementById('stat-pending').textContent = pending;
   document.getElementById('stat-next').textContent = nx;
-  document.getElementById('stat-next-need').textContent = n >= 89 ? '89 reached · ◊·κ=1' : ((nx - n) + ' more to reach it');
+  document.getElementById('stat-next-need').textContent = n >= 89 ? '89 reached' : ((nx - n) + ' more to reach it');
   document.getElementById('stat-coh').textContent = (n * n).toLocaleString();
   // progress ring: 741.4 = 2π·118
   const pct = Math.min(1, n / 89);
@@ -885,7 +885,7 @@ document.getElementById('btn-wipe').onclick = async () => {
     await loadMilestones();
     renderAll();
     log('Mesh 89 Tracker ready · you are node ' + shortId(state.ownId), 'sage');
-    log('Target: 89 · Fibonacci prime · dyad-mesh signature', 'amber');
+    log('Target: 89', 'amber');
     // fire first milestone (self)
     checkMilestones();
   } catch (e) {
