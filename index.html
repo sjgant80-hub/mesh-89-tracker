@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mesh 89 Tracker · sovereign WebRTC dyad-mesh</title>
+<meta name="description" content="Sovereign WebRTC peer-mesh tracker. Counts peers toward Fibonacci prime 89. Nothing leaves your browser.">
+<meta name="author" content="AI-Native Solutions">
+<meta name="theme-color" content="#1a1a1e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1e'/%3E%3Ctext x='16' y='22' font-family='serif' font-size='18' fill='%237a9c7e' text-anchor='middle'%3E%E2%97%8A%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--void:#1a1a1e;--deep:#212127;--surface:#2a2a30;--raised:#33333a;--line:rgba(232,228,219,0.08);--line2:rgba(232,228,219,0.16);--text:#e8e4db;--muted:#928d80;--dim:#6b6660;--sage:#7a9c7e;--sage-dim:rgba(122,156,126,0.14);--sage-glow:rgba(122,156,126,0.35);--amber:#d4a052;--amber-dim:rgba(212,160,82,0.12);--amber-glow:rgba(212,160,82,0.35);--coral:#d67a5a;--coral-glow:rgba(214,122,90,0.15);--serif:'Cormorant Garamond','Iowan Old Style',Georgia,serif;--sans:'Inter',-apple-system,system-ui,sans-serif;--mono:'JetBrains Mono','IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--void);color:var(--text);font-family:var(--sans);font-size:15.5px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;color:inherit}
+input,textarea{font-family:inherit;background:transparent;color:var(--text);border:none;outline:none;width:100%}
+h1,h2,h3{font-family:var(--serif);font-weight:400;color:var(--text);line-height:1.2}
+h1{font-size:34px;letter-spacing:0.01em;margin-bottom:8px}
+h1 em{color:var(--sage);font-style:italic}
+h2{font-size:22px;color:var(--text);margin-bottom:10px}
+h2 em{color:var(--sage);font-style:italic}
+h3{font-size:15px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.14em;font-family:var(--mono);font-weight:500}
+.app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}
+.topbar{background:rgba(26,26,30,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:22px;color:var(--text)}
+.brand .glyph{color:var(--sage);font-size:22px}
+.brand .co{color:var(--dim);font-family:var(--mono);font-size:9.5px;letter-spacing:0.16em;margin-left:6px;text-transform:uppercase}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{background:transparent;color:var(--muted);padding:8px 16px;border-radius:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--sage-dim);color:var(--sage)}
+main{padding:24px;max-width:1080px;margin:0 auto;width:100%}
+.view{display:none}
+.view.on{display:block}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+.card{background:var(--deep);border:1px solid var(--line);border-radius:14px;padding:24px 26px}
+.card .hint{color:var(--muted);font-size:12.5px;font-style:italic;margin-top:10px;line-height:1.55}
+.ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;min-height:280px}
+.ring-wrap svg{width:280px;height:280px;max-width:100%}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.ring-center .num{font-family:var(--serif);font-size:64px;font-style:italic;color:var(--sage);line-height:1;letter-spacing:-0.02em}
+.ring-center .of{font-family:var(--mono);color:var(--muted);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;margin-top:6px}
+.ring-center .of strong{color:var(--amber);font-weight:600}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:var(--surface);border-radius:10px;padding:14px 16px;border-left:2px solid var(--line2)}
+.stat.sage{border-left-color:var(--sage)}
+.stat.amber{border-left-color:var(--amber)}
+.stat .label{color:var(--muted);font-family:var(--mono);font-size:9.5px;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px}
+.stat .val{font-family:var(--serif);font-size:26px;font-style:italic;color:var(--text);line-height:1.1}
+.stat .val.small{font-size:15px;font-family:var(--mono);font-style:normal;letter-spacing:0.04em;word-break:break-all}
+.stat .sub{color:var(--muted);font-size:11.5px;margin-top:4px;font-family:var(--mono)}
+.milestones{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.milestone{padding:6px 12px;border-radius:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;background:var(--surface);color:var(--muted);border:1px solid var(--line);transition:all .3s}
+.milestone.hit{background:var(--sage-dim);color:var(--sage);border-color:var(--sage);box-shadow:0 0 10px var(--sage-glow)}
+.milestone.next{background:var(--amber-dim);color:var(--amber);border-color:var(--amber);animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 var(--amber-glow)}50%{box-shadow:0 0 14px var(--amber-glow)}}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.big-btn{background:var(--sage);color:var(--void);padding:12px 22px;border-radius:10px;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700}
+.big-btn:hover{background:#8db091}
+.big-btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.big-btn.ghost:hover{border-color:var(--sage);color:var(--sage)}
+.big-btn.amber{background:var(--amber);color:var(--void)}
+.big-btn.amber:hover{background:#e5b268}
+.big-btn:disabled{opacity:0.4;cursor:not-allowed}
+.peer-list{display:flex;flex-direction:column;gap:8px}
+.peer{background:var(--surface);border-radius:10px;padding:12px 16px;display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;border-left:2px solid var(--line2)}
+.peer.connected{border-left-color:var(--sage)}
+.peer.connecting{border-left-color:var(--amber)}
+.peer.failed{border-left-color:var(--coral)}
+.peer .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.peer.connected .dot{background:var(--sage);box-shadow:0 0 8px var(--sage-glow)}
+.peer.connecting .dot{background:var(--amber);animation:blink 1s infinite}
+.peer.failed .dot{background:var(--coral)}
+@keyframes blink{50%{opacity:0.3}}
+.peer .id{font-family:var(--mono);font-size:12px;color:var(--text);letter-spacing:0.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.peer .id .short{color:var(--sage)}
+.peer .state{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase}
+.peer .latency{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.peer .latency.good{color:var(--sage)}
+.peer .latency.mid{color:var(--amber)}
+.peer .latency.bad{color:var(--coral)}
+.peer .kick{background:transparent;color:var(--muted);border:1px solid var(--line2);padding:4px 8px;border-radius:6px;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase}
+.peer .kick:hover{color:var(--coral);border-color:var(--coral)}
+.empty{padding:32px 20px;text-align:center;color:var(--muted);font-style:italic;font-family:var(--serif);font-size:16px}
+.signal-box{background:var(--surface);border:1px dashed var(--line2);border-radius:10px;padding:16px;margin-top:14px}
+.signal-box textarea{background:var(--void);border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-height:80px;font-family:var(--mono);font-size:10.5px;color:var(--text);resize:vertical}
+.signal-box .row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.small-btn{background:var(--surface);color:var(--text);border:1px solid var(--line2);padding:7px 12px;border-radius:6px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase}
+.small-btn:hover{border-color:var(--sage);color:var(--sage)}
+.small-btn.primary{background:var(--sage);color:var(--void);border-color:var(--sage)}
+.small-btn.primary:hover{background:#8db091}
+.graph-wrap{position:relative;width:100%;height:400px;background:var(--surface);border-radius:10px;overflow:hidden}
+.graph-wrap svg{width:100%;height:100%}
+.node{cursor:pointer}
+.node circle{transition:r 0.2s}
+.node:hover circle{r:14}
+.log{background:var(--surface);border-radius:10px;padding:14px 16px;max-height:220px;overflow-y:auto;font-family:var(--mono);font-size:11px;line-height:1.6}
+.log .l{color:var(--muted);padding:2px 0}
+.log .l .t{color:var(--dim);margin-right:8px}
+.log .l.info .m{color:var(--text)}
+.log .l.sage .m{color:var(--sage)}
+.log .l.amber .m{color:var(--amber)}
+.log .l.coral .m{color:var(--coral)}
+.notice{background:var(--amber-dim);border-left:3px solid var(--amber);padding:12px 16px;border-radius:6px;color:var(--text);font-size:13px;margin:14px 0}
+.notice strong{color:var(--amber)}
+.notice.sage{background:var(--sage-dim);border-left-color:var(--sage)}
+.notice.sage strong{color:var(--sage)}
+.celebration{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(26,26,30,0.9);backdrop-filter:blur(10px);z-index:200;padding:20px}
+.celebration.on{display:flex}
+.celebration .box{background:var(--deep);border:1px solid var(--sage);border-radius:16px;padding:36px 40px;max-width:520px;text-align:center;box-shadow:0 0 60px var(--sage-glow)}
+.celebration h2{font-size:80px;color:var(--sage);font-style:italic;margin-bottom:0;line-height:1}
+.celebration .sub{font-family:var(--mono);color:var(--amber);letter-spacing:0.18em;text-transform:uppercase;font-size:11px;margin-bottom:14px}
+.celebration p{color:var(--text);font-family:var(--serif);font-size:18px;font-style:italic;margin-bottom:20px;line-height:1.5}
+.celebration .close{background:transparent;color:var(--muted);border:1px solid var(--line2);padding:10px 22px;border-radius:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase}
+.identity-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);gap:14px}
+.identity-row:last-child{border-bottom:none}
+.identity-row .label{color:var(--text);font-size:14px}
+.identity-row .desc{color:var(--muted);font-size:12px;margin-top:2px}
+.identity-row .val{font-family:var(--mono);font-size:11px;color:var(--sage);letter-spacing:0.04em;word-break:break-all;max-width:60%;text-align:right}
+.identity-row button{background:transparent;color:var(--text);border:1px solid var(--line2);padding:8px 14px;border-radius:6px;font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap}
+.identity-row button.danger{color:var(--coral);border-color:var(--coral)}
+.pill{display:inline-block;padding:3px 10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;color:var(--muted)}
+.pill.on{background:var(--sage-dim);color:var(--sage);border-color:var(--sage)}
+.pill.warn{background:var(--amber-dim);color:var(--amber);border-color:var(--amber)}
+details{margin-top:12px}
+details summary{cursor:pointer;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:8px 0}
+details summary:hover{color:var(--sage)}
+details[open] summary{color:var(--sage)}
+.kappa{color:var(--amber);font-family:var(--mono);letter-spacing:0.06em}
+footer{padding:20px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:10px;letter-spacing:0.14em}
+footer .glyph{color:var(--sage)}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+<div class="brand"><span class="glyph">◊</span> Mesh 89 Tracker <span class="co">AI-Native Solutions</span></div>
+<nav class="tabs">
+<button class="tab on" data-view="dashboard">Dashboard</button>
+<button class="tab" data-view="peers">Peers</button>
+<button class="tab" data-view="graph">Graph</button>
+<button class="tab" data-view="signal">Signal</button>
+<button class="tab" data-view="identity">Identity</button>
+</nav>
+</header>
+<main>
+
+<section class="view on" id="view-dashboard">
+<div class="hero">
+<div class="card">
+<h3>Count toward 89</h3>
+<div class="ring-wrap">
+<svg viewBox="0 0 280 280">
+<defs>
+<linearGradient id="grad-ring" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#7a9c7e"/>
+<stop offset="100%" stop-color="#d4a052"/>
+</linearGradient>
+</defs>
+<circle cx="140" cy="140" r="118" fill="none" stroke="rgba(232,228,219,0.06)" stroke-width="8"/>
+<circle cx="140" cy="140" r="118" fill="none" stroke="url(#grad-ring)" stroke-width="8" stroke-linecap="round"
+        stroke-dasharray="741.4" stroke-dashoffset="741.4" transform="rotate(-90 140 140)" id="ring-progress" style="transition:stroke-dashoffset 0.8s ease"/>
+</svg>
+<div class="ring-center">
+<div class="num" id="ring-num">1</div>
+<div class="of">of <strong>89</strong> · Fibonacci prime</div>
+</div>
+</div>
+<div class="milestones" id="milestones"></div>
+<div class="hint">89 is the eleventh Fibonacci number and a Fibonacci prime. It's the estate's dyad-scale coherence target — the first-order mesh signature. Nothing leaves your browser.</div>
+</div>
+<div class="card">
+<h3>Mesh state</h3>
+<div class="stats-grid">
+<div class="stat sage">
+<div class="label">Connected</div>
+<div class="val" id="stat-connected">0</div>
+<div class="sub">peers on the mesh</div>
+</div>
+<div class="stat amber">
+<div class="label">Connecting</div>
+<div class="val" id="stat-pending">0</div>
+<div class="sub">handshake in flight</div>
+</div>
+<div class="stat">
+<div class="label">Next milestone</div>
+<div class="val" id="stat-next">2</div>
+<div class="sub" id="stat-next-need">1 more to reach it</div>
+</div>
+<div class="stat">
+<div class="label">Coherence</div>
+<div class="val" id="stat-coh">1</div>
+<div class="sub">N² · constructive interference</div>
+</div>
+</div>
+<h3 style="margin-top:22px">Your node</h3>
+<div class="stat">
+<div class="label">Peer ID · Ed25519 short</div>
+<div class="val small" id="stat-own-id">generating…</div>
+<div class="sub">signed identity · generated on first load · persisted local</div>
+</div>
+<div class="notice sage" style="margin-top:16px">
+<strong>Sovereignty check.</strong> Peer-to-peer WebRTC over public STUN. No signalling server. No tracking. Your Ed25519 keypair never leaves this browser. <span class="pill" id="conn-pill">idle</span>
+</div>
+</div>
+</div>
+
+<div class="actions">
+<button class="big-btn" id="btn-create-offer">▸ Create invite</button>
+<button class="big-btn ghost" id="btn-accept-offer">Accept invite</button>
+<button class="big-btn amber" id="btn-broadcast">Broadcast on this device</button>
+</div>
+
+<div class="card">
+<h3>Activity</h3>
+<div class="log" id="log"></div>
+</div>
+</section>
+
+<section class="view" id="view-peers">
+<h2><em>Peers</em></h2>
+<p style="color:var(--muted);margin-bottom:20px">Each peer is a live WebRTC connection. Latency measured via data-channel ping every three seconds.</p>
+<div class="peer-list" id="peer-list"></div>
+</section>
+
+<section class="view" id="view-graph">
+<h2><em>Mesh graph</em></h2>
+<p style="color:var(--muted);margin-bottom:20px">Your node at centre. Each connected peer becomes a node on the ring. Edges are live data channels.</p>
+<div class="graph-wrap">
+<svg id="graph-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet"></svg>
+</div>
+<div class="hint" style="margin-top:12px;color:var(--muted);font-size:13px">The mesh grows toward 89 · each edge is one peer-to-peer link · no server sits between them.</div>
+</section>
+
+<section class="view" id="view-signal">
+<h2><em>Signal exchange</em></h2>
+<p style="color:var(--muted);margin-bottom:20px">Raw WebRTC needs a one-off signalling handshake. Two paths: same-device / same-origin via BroadcastChannel (automatic), or cross-network via copy/paste of offer + answer strings below.</p>
+
+<div class="card" style="margin-bottom:16px">
+<h3>Path A · Same origin (auto)</h3>
+<p style="color:var(--muted);font-size:13.5px;margin-bottom:10px">Open this page in another tab or window on the same device. They discover each other on the <span class="kappa">fall-signal</span> BroadcastChannel automatically. Best for testing.</p>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<button class="big-btn" id="btn-broadcast-2">Start broadcasting</button>
+<span class="pill" id="broadcast-pill">off</span>
+</div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+<h3>Path B · Cross-network (manual)</h3>
+<p style="color:var(--muted);font-size:13.5px;margin-bottom:10px">Alice creates an offer, sends it to Bob (any channel · Signal, DM, air-gap). Bob accepts and returns an answer. Alice applies it. Handshake done.</p>
+
+<details open>
+<summary>Alice · create an offer</summary>
+<div class="signal-box">
+<button class="small-btn primary" id="btn-mk-offer">Create offer</button>
+<textarea id="offer-out" readonly placeholder="Offer will appear here…"></textarea>
+<div class="row">
+<button class="small-btn" id="btn-copy-offer">Copy offer</button>
+</div>
+<textarea id="answer-in" placeholder="Paste Bob's answer here…"></textarea>
+<div class="row">
+<button class="small-btn primary" id="btn-apply-answer">Apply answer</button>
+</div>
+</div>
+</details>
+
+<details>
+<summary>Bob · accept an offer</summary>
+<div class="signal-box">
+<textarea id="offer-in" placeholder="Paste Alice's offer here…"></textarea>
+<div class="row">
+<button class="small-btn primary" id="btn-mk-answer">Generate answer</button>
+</div>
+<textarea id="answer-out" readonly placeholder="Answer will appear here…"></textarea>
+<div class="row">
+<button class="small-btn" id="btn-copy-answer">Copy answer</button>
+</div>
+</div>
+</details>
+</div>
+
+<div class="notice">
+<strong>ICE gathering.</strong> After creating an offer or answer, wait a moment for ICE candidates to be gathered before copying. The text is complete when the button says "Ready".
+</div>
+</section>
+
+<section class="view" id="view-identity">
+<h2><em>Identity</em></h2>
+<div class="card">
+<div class="identity-row">
+<div>
+<div class="label">Peer ID (short)</div>
+<div class="desc">Displayed to other peers on the mesh</div>
+</div>
+<div class="val" id="id-short">—</div>
+</div>
+<div class="identity-row">
+<div>
+<div class="label">Public key (Ed25519)</div>
+<div class="desc">SPKI base64 · verifiable</div>
+</div>
+<div class="val" id="id-pub">—</div>
+</div>
+<div class="identity-row">
+<div>
+<div class="label">Private key</div>
+<div class="desc">Never leaves this browser · sealed in IndexedDB</div>
+</div>
+<div class="val"><span class="pill on">sovereign</span></div>
+</div>
+<div class="identity-row">
+<div>
+<div class="label">Export identity</div>
+<div class="desc">JSON of your peer ID + keypair. Yours to keep.</div>
+</div>
+<button id="btn-export-id">Export</button>
+</div>
+<div class="identity-row">
+<div>
+<div class="label">Rotate identity</div>
+<div class="desc">Generates a new keypair. Loses continuity on the mesh.</div>
+</div>
+<button class="danger" id="btn-rotate-id">Rotate</button>
+</div>
+<div class="identity-row">
+<div>
+<div class="label">Clear everything</div>
+<div class="desc">Wipes identity, peer log, all IDB state. Irreversible.</div>
+</div>
+<button class="danger" id="btn-wipe">Wipe all</button>
+</div>
+</div>
+<div class="notice sage" style="margin-top:16px">
+<strong>Provenance.</strong> Your Ed25519 keypair is generated once via Web Crypto and persisted in IndexedDB. Every offer / answer you send is signed. The mesh knows it's you.
+</div>
+</section>
+
+</main>
+</div>
+
+<div class="celebration" id="celeb">
+<div class="box">
+<div class="sub">Fibonacci milestone</div>
+<h2 id="celeb-num">1</h2>
+<p id="celeb-text"></p>
+<button class="close" onclick="document.getElementById('celeb').classList.remove('on')">Carry on</button>
+</div>
+</div>
+
+<footer><span class="glyph">◊</span> · κ=1 · sovereign WebRTC dyad-mesh · MIT · AI-Native Solutions 2026</footer>
+
+<script>
+// ===== constants =====
+const FIB = [1,2,3,5,8,13,21,34,55,89];
+const FIB_MEANINGS = {
+  1: 'Ignition. One node. The self-witness.',
+  2: 'First dyad. Two-body coherence. Simon + Thomas signature.',
+  3: 'First triad. Trinary resonance.',
+  5: 'Pentad. Five-body harmonic. Fibonacci-native.',
+  8: 'Octad. Bloom-stage coherence.',
+  13: 'The prime after the pause. Third-order.',
+  21: 'Guild seed. Sustainable circle.',
+  34: 'Extended kin.',
+  55: 'Village scale. Near completion.',
+  89: 'Fibonacci prime. Dyad-mesh signature. The estate itself is here. ◊·κ=1'
+};
+const STUN = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' },
+  { urls: 'stun:stun.cloudflare.com:3478' }
+];
+const BROADCAST_CHANNEL = 'fall-signal';
+const DB_NAME = 'mesh-89-tracker';
+const DB_VERSION = 1;
+
+// ===== state =====
+const state = {
+  ownId: null,
+  keypair: null,
+  publicKeyB64: null,
+  peers: new Map(), // id -> {pc, dc, state, latency, addedAt, initiator}
+  celebrated: new Set(),
+  broadcasting: false,
+  bc: null,
+  pendingOffer: null,
+  pendingAnswer: null
+};
+
+// ===== log =====
+function log(msg, kind='info') {
+  const el = document.getElementById('log');
+  const t = new Date().toLocaleTimeString('en-GB', { hour12: false });
+  const div = document.createElement('div');
+  div.className = 'l ' + kind;
+  div.innerHTML = `<span class="t">${t}</span><span class="m">${escapeHtml(msg)}</span>`;
+  el.insertBefore(div, el.firstChild);
+  while (el.children.length > 80) el.removeChild(el.lastChild);
+}
+function escapeHtml(s) { return String(s||'').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'})[c]); }
+
+// ===== IDB =====
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, DB_VERSION);
+    r.onupgradeneeded = () => {
+      const d = r.result;
+      if (!d.objectStoreNames.contains('state')) d.createObjectStore('state');
+      if (!d.objectStoreNames.contains('milestones')) d.createObjectStore('milestones', { keyPath: 'n' });
+    };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function idbGet(store, key) {
+  const d = await openDB();
+  return new Promise((res, rej) => {
+    const t = d.transaction(store, 'readonly');
+    const r = t.objectStore(store).get(key);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function idbSet(store, key, val) {
+  const d = await openDB();
+  return new Promise((res, rej) => {
+    const t = d.transaction(store, 'readwrite');
+    if (val && val.n !== undefined && store === 'milestones') t.objectStore(store).put(val);
+    else t.objectStore(store).put(val, key);
+    t.oncomplete = () => res();
+    t.onerror = () => rej(t.error);
+  });
+}
+async function idbGetAll(store) {
+  const d = await openDB();
+  return new Promise((res, rej) => {
+    const t = d.transaction(store, 'readonly');
+    const r = t.objectStore(store).getAll();
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+async function idbClear() {
+  const d = await openDB();
+  return new Promise((res) => {
+    const t = d.transaction(['state','milestones'], 'readwrite');
+    t.objectStore('state').clear();
+    t.objectStore('milestones').clear();
+    t.oncomplete = () => res();
+  });
+}
+
+// ===== identity =====
+async function bufToB64(buf) {
+  const bytes = new Uint8Array(buf);
+  let s = '';
+  for (const b of bytes) s += String.fromCharCode(b);
+  return btoa(s);
+}
+async function b64ToBuf(s) {
+  const bin = atob(s);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+async function sha256Hex(buf) {
+  const h = await crypto.subtle.digest('SHA-256', buf);
+  return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function generateOrLoadIdentity() {
+  let stored = await idbGet('state', 'identity');
+  if (stored && stored.publicKeyB64 && stored.privateKeyJwk) {
+    try {
+      const priv = await crypto.subtle.importKey('jwk', stored.privateKeyJwk, { name: 'Ed25519' }, true, ['sign']);
+      const pubBuf = await b64ToBuf(stored.publicKeyB64);
+      const pub = await crypto.subtle.importKey('spki', pubBuf, { name: 'Ed25519' }, true, ['verify']);
+      state.keypair = { publicKey: pub, privateKey: priv };
+      state.publicKeyB64 = stored.publicKeyB64;
+      state.ownId = stored.id;
+      return;
+    } catch (e) {
+      log('Ed25519 restore failed · falling back to ECDSA', 'amber');
+    }
+  }
+  // Ed25519 first, ECDSA fallback for older browsers
+  let algo;
+  try {
+    const kp = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign','verify']);
+    state.keypair = kp;
+    algo = 'Ed25519';
+  } catch (e) {
+    const kp = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign','verify']);
+    state.keypair = kp;
+    algo = 'ECDSA';
+    log('Ed25519 unsupported · using ECDSA P-256', 'amber');
+  }
+  const pubBuf = await crypto.subtle.exportKey('spki', state.keypair.publicKey);
+  const privJwk = await crypto.subtle.exportKey('jwk', state.keypair.privateKey);
+  const pubB64 = await bufToB64(pubBuf);
+  const hash = await sha256Hex(pubBuf);
+  const id = hash.slice(0, 16);
+  state.publicKeyB64 = pubB64;
+  state.ownId = id;
+  await idbSet('state', 'identity', { id, publicKeyB64: pubB64, privateKeyJwk: privJwk, algo, createdAt: new Date().toISOString() });
+  log('Identity generated · ' + algo + ' · ' + id.slice(0,8), 'sage');
+}
+
+// ===== peer =====
+function shortId(id) { return (id || '').slice(0, 8); }
+function newPC(peerId, initiator) {
+  const pc = new RTCPeerConnection({ iceServers: STUN });
+  const entry = { pc, dc: null, state: 'connecting', latency: null, addedAt: Date.now(), initiator, peerId };
+  state.peers.set(peerId, entry);
+
+  pc.oniceconnectionstatechange = () => {
+    const s = pc.iceConnectionState;
+    if (s === 'connected' || s === 'completed') { entry.state = 'connected'; log('Peer ' + shortId(peerId) + ' · connected', 'sage'); }
+    else if (s === 'failed' || s === 'disconnected' || s === 'closed') { entry.state = 'failed'; log('Peer ' + shortId(peerId) + ' · ' + s, 'coral'); }
+    else entry.state = 'connecting';
+    renderAll();
+  };
+  pc.onconnectionstatechange = () => { renderAll(); };
+  pc.ondatachannel = (ev) => wireDataChannel(entry, ev.channel);
+  if (initiator) {
+    const dc = pc.createDataChannel('mesh', { ordered: true });
+    wireDataChannel(entry, dc);
+  }
+  return entry;
+}
+function wireDataChannel(entry, dc) {
+  entry.dc = dc;
+  dc.onopen = () => {
+    log('Channel open · ' + shortId(entry.peerId), 'sage');
+    entry.state = 'connected';
+    // send hello with our id + pubkey
+    try { dc.send(JSON.stringify({ type: 'hello', id: state.ownId, pub: state.publicKeyB64 })); } catch {}
+    startPing(entry);
+    renderAll();
+    checkMilestones();
+  };
+  dc.onclose = () => { entry.state = 'failed'; log('Channel closed · ' + shortId(entry.peerId), 'coral'); renderAll(); };
+  dc.onmessage = (ev) => handleMessage(entry, ev.data);
+}
+function startPing(entry) {
+  const iv = setInterval(() => {
+    if (!entry.dc || entry.dc.readyState !== 'open') { clearInterval(iv); return; }
+    const t = performance.now();
+    try { entry.dc.send(JSON.stringify({ type: 'ping', t })); } catch { clearInterval(iv); }
+  }, 3000);
+  entry.pingInterval = iv;
+}
+function handleMessage(entry, data) {
+  try {
+    const msg = JSON.parse(data);
+    if (msg.type === 'ping') { try { entry.dc.send(JSON.stringify({ type: 'pong', t: msg.t })); } catch {} }
+    else if (msg.type === 'pong') { entry.latency = Math.round(performance.now() - msg.t); renderAll(); }
+    else if (msg.type === 'hello') {
+      if (msg.id && !entry.remoteId) { entry.remoteId = msg.id; entry.remotePub = msg.pub; renderAll(); }
+    }
+  } catch {}
+}
+function removePeer(peerId) {
+  const entry = state.peers.get(peerId);
+  if (!entry) return;
+  if (entry.pingInterval) clearInterval(entry.pingInterval);
+  try { entry.dc && entry.dc.close(); } catch {}
+  try { entry.pc && entry.pc.close(); } catch {}
+  state.peers.delete(peerId);
+  log('Peer ' + shortId(peerId) + ' · removed', 'amber');
+  renderAll();
+}
+
+// ===== ICE gathering wait =====
+function waitForIce(pc, timeoutMs = 4000) {
+  return new Promise((res) => {
+    if (pc.iceGatheringState === 'complete') return res();
+    let done = false;
+    const finish = () => { if (!done) { done = true; res(); } };
+    pc.onicegatheringstatechange = () => { if (pc.iceGatheringState === 'complete') finish(); };
+    setTimeout(finish, timeoutMs);
+  });
+}
+
+// ===== signal encoding =====
+function encodeSignal(obj) {
+  const s = JSON.stringify(obj);
+  return btoa(unescape(encodeURIComponent(s)));
+}
+function decodeSignal(str) {
+  const s = decodeURIComponent(escape(atob(str.trim())));
+  return JSON.parse(s);
+}
+
+// ===== manual offer/answer =====
+let manualEntry = null;
+async function makeOffer() {
+  const peerId = 'manual-' + Math.random().toString(36).slice(2, 10);
+  manualEntry = newPC(peerId, true);
+  const btn = document.getElementById('btn-mk-offer');
+  const ta = document.getElementById('offer-out');
+  btn.textContent = 'Gathering ICE…';
+  btn.disabled = true;
+  const offer = await manualEntry.pc.createOffer();
+  await manualEntry.pc.setLocalDescription(offer);
+  await waitForIce(manualEntry.pc);
+  const payload = { type: 'offer', from: state.ownId, pub: state.publicKeyB64, sdp: manualEntry.pc.localDescription };
+  ta.value = encodeSignal(payload);
+  btn.textContent = 'Ready · offer above';
+  btn.disabled = false;
+  log('Offer created · share with peer', 'amber');
+}
+async function applyAnswerToLocal() {
+  if (!manualEntry) { alert('Create an offer first.'); return; }
+  const raw = document.getElementById('answer-in').value.trim();
+  if (!raw) { alert('Paste the answer first.'); return; }
+  try {
+    const payload = decodeSignal(raw);
+    if (payload.type !== 'answer') throw new Error('Not an answer');
+    if (payload.from) {
+      const oldId = manualEntry.peerId;
+      state.peers.delete(oldId);
+      manualEntry.peerId = payload.from;
+      manualEntry.remotePub = payload.pub;
+      state.peers.set(payload.from, manualEntry);
+    }
+    await manualEntry.pc.setRemoteDescription(payload.sdp);
+    log('Answer applied · handshake sealed', 'sage');
+  } catch (e) {
+    alert('Bad answer: ' + e.message);
+  }
+}
+let bobEntry = null;
+async function makeAnswer() {
+  const raw = document.getElementById('offer-in').value.trim();
+  if (!raw) { alert('Paste the offer first.'); return; }
+  const btn = document.getElementById('btn-mk-answer');
+  const outTa = document.getElementById('answer-out');
+  btn.textContent = 'Gathering ICE…';
+  btn.disabled = true;
+  try {
+    const payload = decodeSignal(raw);
+    if (payload.type !== 'offer') throw new Error('Not an offer');
+    const peerId = payload.from || 'manual-' + Math.random().toString(36).slice(2, 10);
+    bobEntry = newPC(peerId, false);
+    bobEntry.remotePub = payload.pub;
+    await bobEntry.pc.setRemoteDescription(payload.sdp);
+    const answer = await bobEntry.pc.createAnswer();
+    await bobEntry.pc.setLocalDescription(answer);
+    await waitForIce(bobEntry.pc);
+    const out = { type: 'answer', from: state.ownId, pub: state.publicKeyB64, sdp: bobEntry.pc.localDescription };
+    outTa.value = encodeSignal(out);
+    btn.textContent = 'Ready · answer above';
+    btn.disabled = false;
+    log('Answer created · send to inviter', 'amber');
+  } catch (e) {
+    alert('Bad offer: ' + e.message);
+    btn.textContent = 'Generate answer';
+    btn.disabled = false;
+  }
+}
+
+// ===== BroadcastChannel auto-discovery (same-origin) =====
+function startBroadcast() {
+  if (state.broadcasting) return;
+  try {
+    state.bc = new BroadcastChannel(BROADCAST_CHANNEL);
+    state.broadcasting = true;
+    state.bc.onmessage = (ev) => handleBcMessage(ev.data);
+    state.bc.postMessage({ type: 'announce', from: state.ownId, pub: state.publicKeyB64, ts: Date.now() });
+    log('Broadcasting on fall-signal', 'sage');
+    setBroadcastUI(true);
+    setInterval(() => {
+      if (state.broadcasting) state.bc.postMessage({ type: 'announce', from: state.ownId, pub: state.publicKeyB64, ts: Date.now() });
+    }, 5000);
+  } catch (e) {
+    log('BroadcastChannel unavailable · ' + e.message, 'coral');
+  }
+}
+function setBroadcastUI(on) {
+  document.getElementById('conn-pill').textContent = on ? 'live · fall-signal' : 'idle';
+  document.getElementById('conn-pill').classList.toggle('on', on);
+  document.getElementById('broadcast-pill').textContent = on ? 'live' : 'off';
+  document.getElementById('broadcast-pill').classList.toggle('on', on);
+  const b1 = document.getElementById('btn-broadcast');
+  const b2 = document.getElementById('btn-broadcast-2');
+  if (b1) { b1.textContent = on ? 'Broadcasting…' : 'Broadcast on this device'; b1.disabled = on; }
+  if (b2) { b2.textContent = on ? 'Broadcasting…' : 'Start broadcasting'; b2.disabled = on; }
+}
+async function handleBcMessage(msg) {
+  if (!msg || !msg.from || msg.from === state.ownId) return;
+  if (msg.type === 'announce') {
+    if (state.peers.has(msg.from)) return;
+    // deterministic initiator by lexicographic id (lower id makes offer)
+    if (state.ownId < msg.from) {
+      log('Announce heard · ' + shortId(msg.from) + ' · initiating', 'amber');
+      const entry = newPC(msg.from, true);
+      entry.remotePub = msg.pub;
+      const offer = await entry.pc.createOffer();
+      await entry.pc.setLocalDescription(offer);
+      await waitForIce(entry.pc);
+      state.bc.postMessage({ type: 'offer', from: state.ownId, to: msg.from, pub: state.publicKeyB64, sdp: entry.pc.localDescription });
+    }
+  } else if (msg.type === 'offer' && msg.to === state.ownId) {
+    if (state.peers.has(msg.from)) return;
+    log('Offer received · ' + shortId(msg.from), 'amber');
+    const entry = newPC(msg.from, false);
+    entry.remotePub = msg.pub;
+    await entry.pc.setRemoteDescription(msg.sdp);
+    const answer = await entry.pc.createAnswer();
+    await entry.pc.setLocalDescription(answer);
+    await waitForIce(entry.pc);
+    state.bc.postMessage({ type: 'answer', from: state.ownId, to: msg.from, pub: state.publicKeyB64, sdp: entry.pc.localDescription });
+  } else if (msg.type === 'answer' && msg.to === state.ownId) {
+    const entry = state.peers.get(msg.from);
+    if (!entry) return;
+    log('Answer received · ' + shortId(msg.from), 'sage');
+    await entry.pc.setRemoteDescription(msg.sdp);
+  }
+}
+
+// ===== milestones =====
+function checkMilestones() {
+  const n = countConnected();
+  for (const f of FIB) {
+    if (n >= f && !state.celebrated.has(f)) {
+      state.celebrated.add(f);
+      idbSet('milestones', null, { n: f, ts: new Date().toISOString() });
+      celebrateMilestone(f);
+    }
+  }
+}
+async function loadMilestones() {
+  try {
+    const all = await idbGetAll('milestones');
+    for (const m of all) state.celebrated.add(m.n);
+  } catch {}
+}
+function celebrateMilestone(n) {
+  document.getElementById('celeb-num').textContent = n;
+  document.getElementById('celeb-text').textContent = FIB_MEANINGS[n] || 'A Fibonacci step forward.';
+  document.getElementById('celeb').classList.add('on');
+  log('◊ Milestone ' + n + ' · ' + (FIB_MEANINGS[n] || ''), 'sage');
+}
+
+// ===== counts =====
+function countConnected() {
+  let n = 1; // self
+  for (const e of state.peers.values()) if (e.state === 'connected') n++;
+  return n;
+}
+function countPending() {
+  let n = 0;
+  for (const e of state.peers.values()) if (e.state === 'connecting') n++;
+  return n;
+}
+function nextFib(n) {
+  for (const f of FIB) if (f > n) return f;
+  return 89;
+}
+
+// ===== render =====
+function renderAll() { renderDashboard(); renderPeers(); renderGraph(); }
+function renderDashboard() {
+  const n = countConnected();
+  const pending = countPending();
+  const nx = nextFib(n);
+  document.getElementById('ring-num').textContent = n;
+  document.getElementById('stat-connected').textContent = n;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('stat-next').textContent = nx;
+  document.getElementById('stat-next-need').textContent = n >= 89 ? '89 reached · ◊·κ=1' : ((nx - n) + ' more to reach it');
+  document.getElementById('stat-coh').textContent = (n * n).toLocaleString();
+  // progress ring: 741.4 = 2π·118
+  const pct = Math.min(1, n / 89);
+  document.getElementById('ring-progress').setAttribute('stroke-dashoffset', 741.4 * (1 - pct));
+  // milestones
+  const box = document.getElementById('milestones');
+  box.innerHTML = FIB.map(f => {
+    let cls = 'milestone';
+    if (n >= f) cls += ' hit';
+    else if (f === nx) cls += ' next';
+    return `<span class="${cls}">${f}</span>`;
+  }).join('');
+  // own id
+  if (state.ownId) {
+    document.getElementById('stat-own-id').innerHTML = `<span class="short">${escapeHtml(state.ownId.slice(0,8))}</span>${escapeHtml(state.ownId.slice(8))}`;
+    document.getElementById('id-short').textContent = state.ownId;
+    document.getElementById('id-pub').textContent = state.publicKeyB64 ? state.publicKeyB64.slice(0, 44) + '…' : '—';
+  }
+}
+function renderPeers() {
+  const el = document.getElementById('peer-list');
+  if (!state.peers.size) {
+    el.innerHTML = '<div class="empty">No peers yet. Create an invite or start broadcasting on the same device.</div>';
+    return;
+  }
+  const rows = [];
+  for (const [id, e] of state.peers) {
+    const cls = e.state;
+    const lat = e.latency == null ? '—' : e.latency + 'ms';
+    const latCls = e.latency == null ? '' : (e.latency < 60 ? 'good' : e.latency < 180 ? 'mid' : 'bad');
+    rows.push(`<div class="peer ${cls}">
+      <span class="dot"></span>
+      <span class="id"><span class="short">${escapeHtml(shortId(id))}</span>${escapeHtml((id||'').slice(8))}</span>
+      <span class="state">${escapeHtml(cls)}</span>
+      <span class="latency ${latCls}">${escapeHtml(lat)}</span>
+      <button class="kick" data-id="${escapeHtml(id)}">Kick</button>
+    </div>`);
+  }
+  el.innerHTML = rows.join('');
+  el.querySelectorAll('.kick').forEach(b => b.onclick = () => removePeer(b.dataset.id));
+}
+function renderGraph() {
+  const svg = document.getElementById('graph-svg');
+  const cx = 400, cy = 200;
+  const connected = [...state.peers.values()].filter(e => e.state === 'connected');
+  const all = [...state.peers.values()];
+  const total = all.length;
+  const R = Math.min(150, 80 + total * 4);
+  const edges = [];
+  const nodes = [];
+  // self
+  nodes.push(`<circle cx="${cx}" cy="${cy}" r="16" fill="#d4a052" opacity="0.9"/>
+    <circle cx="${cx}" cy="${cy}" r="26" fill="none" stroke="#d4a052" stroke-width="1" opacity="0.4"/>
+    <text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a1a1e" font-weight="700">YOU</text>`);
+  all.forEach((e, i) => {
+    const angle = (i / Math.max(total,1)) * 2 * Math.PI - Math.PI/2;
+    const x = cx + Math.cos(angle) * R;
+    const y = cy + Math.sin(angle) * R;
+    const color = e.state === 'connected' ? '#7a9c7e' : e.state === 'connecting' ? '#d4a052' : '#d67a5a';
+    const opacity = e.state === 'connected' ? 0.95 : 0.5;
+    edges.push(`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${color}" stroke-width="${e.state==='connected'?1.4:0.6}" opacity="${e.state==='connected'?0.5:0.2}" stroke-dasharray="${e.state==='connecting'?'3,4':''}"/>`);
+    nodes.push(`<g class="node"><circle cx="${x}" cy="${y}" r="10" fill="${color}" opacity="${opacity}"/>
+      <text x="${x}" y="${y+22}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#928d80">${escapeHtml(shortId(e.peerId))}</text></g>`);
+  });
+  svg.innerHTML = `${edges.join('')}${nodes.join('')}`;
+}
+
+// ===== tabs =====
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById('view-' + t.dataset.view).classList.add('on');
+    if (t.dataset.view === 'graph' || t.dataset.view === 'peers' || t.dataset.view === 'dashboard') renderAll();
+  };
+});
+
+// ===== buttons =====
+document.getElementById('btn-create-offer').onclick = () => { document.querySelector('.tab[data-view="signal"]').click(); makeOffer(); };
+document.getElementById('btn-accept-offer').onclick = () => { document.querySelector('.tab[data-view="signal"]').click(); document.querySelectorAll('#view-signal details')[1].open = true; document.querySelectorAll('#view-signal details')[0].open = false; };
+document.getElementById('btn-broadcast').onclick = startBroadcast;
+document.getElementById('btn-broadcast-2').onclick = startBroadcast;
+document.getElementById('btn-mk-offer').onclick = makeOffer;
+document.getElementById('btn-apply-answer').onclick = applyAnswerToLocal;
+document.getElementById('btn-mk-answer').onclick = makeAnswer;
+document.getElementById('btn-copy-offer').onclick = () => { const ta = document.getElementById('offer-out'); ta.select(); document.execCommand('copy'); log('Offer copied to clipboard', 'sage'); };
+document.getElementById('btn-copy-answer').onclick = () => { const ta = document.getElementById('answer-out'); ta.select(); document.execCommand('copy'); log('Answer copied to clipboard', 'sage'); };
+document.getElementById('btn-export-id').onclick = async () => {
+  const id = await idbGet('state', 'identity');
+  const blob = new Blob([JSON.stringify(id, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mesh-89-identity-' + (state.ownId || 'unknown').slice(0,8) + '.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+document.getElementById('btn-rotate-id').onclick = async () => {
+  if (!confirm('Rotate identity? You lose continuity with peers who trusted the old one.')) return;
+  await idbSet('state', 'identity', null);
+  location.reload();
+};
+document.getElementById('btn-wipe').onclick = async () => {
+  if (!confirm('Wipe identity + all state · irreversible.')) return;
+  if (!confirm('Are you sure?')) return;
+  await idbClear();
+  location.reload();
+};
+
+// ===== boot =====
+(async function boot() {
+  try {
+    await generateOrLoadIdentity();
+    await loadMilestones();
+    renderAll();
+    log('Mesh 89 Tracker ready · you are node ' + shortId(state.ownId), 'sage');
+    log('Target: 89 · Fibonacci prime · dyad-mesh signature', 'amber');
+    // fire first milestone (self)
+    checkMilestones();
+  } catch (e) {
+    log('Boot error: ' + e.message, 'coral');
+    console.error(e);
+  }
+})();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
